@@ -1,45 +1,33 @@
 # Code Book
-The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+The file `run_analysis.R` will create the output file name `tidy_data.txt` which is the result from Getting and Cleaning data assignment. The code do the following step.
 
-The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain. See 'features_info.txt' for more details. 
+### Preparation
+Before start make sure the library dplyr and downloader is loaded. When run the function `makeTidyData()` in `run_analysis.R` it will download a zipfile and extract to folder `UCI HAR Dataset` and contain necessary files below:
 
-### For each record it is provided:
+features.txt: uses the data features.
+activity_labels.txt: an activities include 6 values : WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING.
+subject_train.txt - uses the data train subjects. Values range from 1 - 30
+X_train.txt - uses the data trainX.
+y_train.txt - uses the data trainY.
+subject_test.txt -uses the data test subjects. Values range from 1 - 30
+X_test.txt - uses the data testX.
+y_test.txt - uses the data testY.
 
-- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration.
-- Triaxial Angular velocity from the gyroscope. 
-- A 561-feature vector with time and frequency domain variables. 
-- Its activity label. 
-- An identifier of the subject who carried out the experiment.
+### 1. Merges the training and the test sets to create one data set.
+I read all data from test files "test/subject_test.txt", "test/X_test.txt", "test/y_test.txt"
+and the train files "train/subject_train.txt", "train/X_train.txt", "train/y_train.txt"
+and using `rbind` to create combined_subject, combined_label, combined_data
+  
+finally conbind subject, label, data together using `cbind`
 
-### The dataset includes the following files:
+### 2. Extracts only the measurements on the mean and standard deviation for each measurement.
+I read features from file "features.txt" and then search for column contain only string '-mean()' and '-std()' using `grep` and filter that column.
 
-- 'README.txt'
+### 3. Uses descriptive activity names to name the activities in the data set
+I read activities from file "activity_labels.txt" to get factor from activity_labels and replace the value with the data from activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING).
 
-- 'features_info.txt': Shows information about the variables used on the feature vector.
+### 4. Appropriately labels the data set with descriptive variable names.
+I rename the 1st column to `subject` as it represent the subject to the data. Rename the 2nd column to activity to show the activity, then rename the rest of the column according to the features data from step #2.
 
-- 'features.txt': List of all features.
-
-- 'activity_labels.txt': Links the class labels with their activity name.
-
-- 'train/X_train.txt': Training set.
-
-- 'train/y_train.txt': Training labels.
-
-- 'test/X_test.txt': Test set.
-
-- 'test/y_test.txt': Test labels.
-
-The following files are available for the train and test data. Their descriptions are equivalent. 
-
-- 'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
-
-### The data has cleaned with the step below
-1. Merges the training and the test sets to create one data set.
-
-2. Extracts only the measurements on the mean and standard deviation for each measurement.
-
-3. Rename the colume to know the features names in the data set.
-
-4. Match the activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) with data set.
-
-5. Creates a tidy data set with the average of each variable for each activity and each subject.
+### 5. Creates a tidy data set with the average of each variable for each activity and each subject.
+I use `group_by` and `summarise_all` of dplyr library, 1st use `group_by` to group data according to subject and activity, the use `summarise_all` with the mean function to find the mean of each activity and each subject. Than use `write.table` to write the final tidy data output to file name `tidy_data.txt`, the script is completed.
