@@ -16,4 +16,4 @@ The project contain source file run_analysis.R, open the file and run `makeTidyD
 4. Appropriately labels the data set with descriptive variable names.
 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
-For more information about the data, please read the CodeBook.md
+For more information about the data, please read the [CodeBook.md](https://github.com/zigzagzone/coursera-tidy-data/blob/master/CodeBook.md)
